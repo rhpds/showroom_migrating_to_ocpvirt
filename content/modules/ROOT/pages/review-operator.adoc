@@ -1,0 +1,121 @@
+== Environment Review and OpenShift Virtualization Operator Review
+
+:numbered:
+
+== Introduction to Operator Installation
+
+In this lab, you review the OpenShift Operator that installs Red Hat^(R)^ OpenShift^(R)^ Virtualization for Red Hat OpenShift Container Platform 4.
+
+.Goals
+* Become familiar with the cluster requirements for Red Hat OpenShift Virtualization
+* Explore the nodes and machines in your Red Hat OpenShift Container Platform cluster
+* Gain experience with Operator installation using the OperatorHub
+* Examine the installed Operator and the PersistentVolumeClaim created by the Operator
+
+== Review Red Hat OpenShift Container Platform Cluster
+
+=== Supported Platforms
+
+* On-premise bare metal servers
+
+* Amazon Web Services bare metal instances. See link:https://access.redhat.com/articles/6409731[Deploy OpenShift Virtualization on AWS Bare Metal Nodes for details].
+
+* IBM Cloud Bare Metal Servers. See link:https://access.redhat.com/articles/6738731[Deploy OpenShift Virtualization on IBM Cloud Bare Metal Nodes for details].
+
+[NOTE]
+Installing OpenShift Virtualization on AWS bare metal instances or on IBM Cloud Bare Metal Servers is a Technology Preview feature only. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. Red Hat does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+
+
+=== Verify Requirements
+
+Before you install OpenShift Virtualization for Red Hat OpenShift Container Platform 4, make sure that your Red Hat OpenShift Container Platform cluster meets the following requirements:
+
+* CPU requirements
+** Supported by Red Hat Enterprise Linux (RHEL) 8
+** Support for Intel 64 or AMD64 CPU extensions
+** Intel VT or AMD-V hardware virtualization extensions enabled
+** NX (no execute) flag enabled
+* Storage requirements
+** Supported by OpenShift Container Platform
+
+* Operating system requirements
+** Red Hat Enterprise Linux CoreOS (RHCOS) installed on worker nodes
++
+[NOTE]
+If your cluster uses worker nodes with different CPUs, live migration failures can occur because different CPUs have different capabilities. 
+
+
+=== Review Nodes and Machines
+
+. Navigate to %ocp_url% and login with user `admin` and password received in the mail.
+
+. From the navigation menu, select *Compute* -> *Nodes*:
++
+image::_images/Install/Compute_Nodes.png[]
++
+There are three master and three workers in the OpenShift 4 Cluster. In addition, the `ipmi` (Intelligent Platform Management Interface) is being used to manage the bare-metal nodes.
+
+. Click a worker node to obtain resource information about the node, and navigate to the *Details* tab to review the information about the operating system:
++
+image::_images/Install/Worker0_Information.png[]
++
+The bare-metal node is configured using RHCOS.
+
+. Select *Compute* -> *Bare Metal Hosts*:
++
+image::_images/Install/BMHosts.png[]
++
+[NOTE]
+Ignore the "Registration error" message if it appears.
+
+. Click a worker node to obtain information about the physical (bare-metal) node:
++
+image::_images/Install/Worker0_BMhost.png[]
++
+[NOTE]
+Ignore the "Registration error" message if it appears.
+
+
+== Examine OpenShift Virtualization Operator
+
+To save time to perform the lab tasks, the operator was preinstalled for you.
+
+. Navigate to *Operator* -> *Installed Operators* and select *OpenShift Virtualization*
+
+. Click the *Details* tab to view information about the Operator:
++
+image::_images/Install/11_Details_1.png[]
+
+. Scroll down to the *ClusterServiceVersion details* section and review the details:
++
+image::_images/Install/11_Details_2.png[]
++
+You can see the Namespace where the Operator was installed, the status, the different Operator deployments created during the installation, the Operator ServiceAccounts created, and the OperatorGroup.
+
+. Scroll up and click the *Subscription* tab to view the subscription details:
++
+image::_images/Install/12_Subscription.png[]
++
+[NOTE]
+Subscribing an Operator to one or more namespaces makes the Operator available to developers on your cluster.
+
+== Examine PersistentVolumeClaims Created by Operator
+
+During the installation of the Operator, some PersistentVolumeClaims for different distributions are created:
+
+* Red Hat Enterprise Linux 8.0+
+* Red Hat Enterprise Linux 9.0
+* Fedora
+* CentOS 7
+* CentOS Stream 8
+* CentOS Stream 9
+
+In this section, you examine the PVCs created by the Operator.
+
+. In the left menu, navigate to *Storage* and click *PersistentVolumeClaims*. From the project dropdown select `Show default projects` and filter or select `openshift-virtualization-os-images`
++
+image::_images/Install/13_PVC_NS.png[]
+
+. Review the PVCs automatically created, which are going to be used to create VMs from the catalog.
++
+image::_images/Install/14_PVCs.png[]

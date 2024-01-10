@@ -1,0 +1,11 @@
+== Welcome to the Lab
+
+This *Migration to OpenShift Virtualization* lab is organized in the following sections:
+
+* *Review environment and Operator*: This section reviews the *OpenShift* installation to be used for the following labs. In this section you will review the installation of the *OpenShift Virtualization* operator.
+* *OpenShift Virtualization basics*: Even this lab is related to the migration from other platforms, this lab covers the basics and the required concepts needed to run simple *Virtual Machines* and administrate them.
+* *Virtual Machine Customization*: One of the most important concepts running *Virtual Machines* is to run VMs from an existing disk and the possibility to customize them.
+* *Pod Review and Virtual Machine Migration*: A *Virtual Machine* is associated to a *Pod*, this section reviews how internally the VMs are running and how to migrate VMs between nodes.
+* *Network Attachment*: *Virtual Machines* by default are running in the *Pod networking*. For several use cases is required to run the VMs attached to a physical network, this section will demonstrate how to configure *OpenShift* for that purpose.
+* *Migrating Virtual Machines*: In this section several migration from different providers will be performed. Using the operator *Migration Toolkit Virtualization* (*MTV*) migration from *Red Hat Virtualization* and *VMWare vCenter* will be performed. Manual migration from a Libvirt/KVM node will be performed as well.
+* *Architecture*: An explanation behind the MTV operator and the Custom Resources used.

@@ -1,0 +1,176 @@
+:scrollbar:
+:toc2:
+
+
+=  Migration Toolkit Virtualization Architecture
+
+This section only describes the MTV architecture for the people who wants to go deeper to understand the resources and the relationships.
+
+== MTV Custom Resources (CR)
+
+* *Provider* CR stores attributes that enable MTV to connect to and interact with the source and target providers. Example:
++
+[source,yaml]
+----
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Provider
+metadata:
+  name: rhv
+  namespace: openshift-mtv
+spec:
+  type: ovirt
+  url: https://rhvm.lab.opentlc.com/ovirt-engine/api 
+  secret:
+    name: rhv-credentials 
+    namespace: openshift-mtv
+----
+
+* *NetworkMap* CR maps the networks of the source and target providers. Example:
++
+[source,yaml]
+----
+apiVersion: forklift.konveyor.io/v1beta1
+kind: NetworkMap
+metadata:
+  name: rhvnetworkmap
+  namespace: openshift-mtv
+spec:
+  map:
+    - destination:
+        name: podnetwork
+        namespace: openshift-mtv
+        type: pod 
+      source: 
+        name: ovirtmgmt/ovirtmgmt
+  provider:
+    source:
+      name: rhv
+      namespace: openshift-mtv
+    destination:
+      name: host
+      namespace: openshift-mtv
+----
+
+
+* *StorageMap* CR maps the storage of the source and target providers. Example:
++
+[source,yaml]
+----
+apiVersion: forklift.konveyor.io/v1beta1
+kind: StorageMap
+metadata:
+  name: rhvstoragemap
+  namespace: openshift-mtv
+spec:
+  map:
+    - destination:
+        storageClass: ocs-external-storagecluster-ceph-rbd
+        accessMode: ReadWriteMany
+      source:
+        name: vms
+
+  provider:
+    source:
+      name: rhv
+      namespace: openshift-mtv
+    destination:
+      name: host
+      namespace: openshift-mtv
+----
+
+* *Plan* CR contains a list of VMs with the same migration parameters and associated network and storage mappings. Example:
++
+[source,yaml]
+----
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Plan
+metadata:
+  name: plan-migrate-webs
+  namespace: openshift-mtv
+spec:
+  warm: false 
+  provider:
+    source:
+      name: rhv
+      namespace: openshift-mtv
+    destination:
+      name: host
+      namespace: openshift-mtv
+  map:
+    network: 
+      name: rhvnetworkmap 
+      namespace: openshift-mtv
+    storage:
+      name: rhvstoragemap
+      namespace: openshift-mtv
+  targetNamespace: openshift-mtv
+  vms: 
+    - name: web01
+    - name: web02
+----
+
+
+* *Migration* CR runs a migration plan.
++
+Only one Migration CR per migration plan can run at a given time. You can create multiple Migration CRs for a single Plan CR. 
++
+Example:
++
+[source,yaml]
+----
+apiVersion: forklift.konveyor.io/v1beta1
+kind: Migration
+metadata:
+  name: migration-webs 
+  namespace: openshift-mtv
+spec:
+  plan:
+    name: plan-migrate-webs
+    namespace: openshift-mtv
+----
+
+
+== MTV services
+
+* The *Inventory* service performs the following actions:
+
+** Connects to the source and target providers.
+** Maintains a local inventory for mappings and plans.
+** Stores VM configurations.
+** Runs the *Validation* service if a VM configuration change is detected.
+* The *Validation* service checks the suitability of a VM for migration by applying rules.
+* The *User Interface* service performs the following actions:
+
+** Enables you to create and configure MTV CRs.
+** Displays the status of the CRs and the progress of a migration.
+* The *Migration Controller* service orchestrates migrations.
++
+When you create a migration plan, the *Migration Controller* service validates the plan and adds a status label. If the plan fails validation, the plan status is *Not ready* and the plan cannot be used to perform a migration. If the plan passes validation, the plan status is *Ready* and it can be used to perform a migration. After a successful migration, the *Migration Controller* service changes the plan status to *Completed*.
+
+* The *Kubevirt Controller* and *Containerized Data Import (CDI)* Controller services handle most technical operations.
+
+
+== Detailed migration workflow
+
+You can use the detailed migration workflow to troubleshoot a failed migration.
+
+The workflow describes the following steps:
+
+* When you create a *Migration* custom resource (CR) to run a migration plan, the *Migration Controller* service creates a *VirtualMachine* CR for each source virtual machine (VM) and a *DataVolume* CR for each source VM disk.
+
+* For each VM disk:
+
+** The *Containerized Data Importer (CDI)* Controller service creates a persistent volume claim (PVC) based on the parameters specified in the *DataVolume* CR.
+** If the *StorageClass* has a dynamic provisioner, the persistent volume (PV) is dynamically provisioned by the *StorageClass* provisioner.
+* The *CDI Controller* service creates an *importer* pod.
+* The *importer* pod streams the VM disk to the PV.
+
+* After the VM disks are transferred:
+
+** The *Migration Controller* service creates a *conversion* pod with the PVCs attached to it.
++
+The *conversion* pod runs *virt-v2v*, which installs and configures device drivers on the PVCs of the target VM.
+
+** When the target VM is powered on, the *KubeVirt Controller* service creates a *virt-launcher* pod and a *VirtualMachineInstance* CR.
++
+The *virt-launcher* pod runs *QEMU-KVM* with the PVCs attached as VM disks.
