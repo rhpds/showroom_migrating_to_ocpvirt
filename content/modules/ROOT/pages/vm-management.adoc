@@ -39,7 +39,7 @@ image::_images/Pods_Migration/33_VM_Actions_Paused.png[]
 
 In this section, we will migrate the VM from one OpenShift node to another without shutting down the VM. Live migration requires on `ReadWriteMany` (RWX) storage so that the VM disks can be mounted on both the source and destination nodes at the same time. OpenShift Virtualization, unlike other virtualization solutions, does not use monolithic datastores mounted to each cluster member that hold many VM disks for many different VMs. Instead, each VM disk is stored in its own volume that is only mounted when and where it's needed. 
 
-. Navigate to the *Details* tab to see where the worker node is running:
+. Navigate to the *Details* tab to see on which worker node the VM is running:
 +
 image::_images/Pods_Migration/17_VM_Info_Node.png[]
 
@@ -74,4 +74,4 @@ image::_images/Pods_Migration/37_VM_Resources_Warning.png[]
 
 == Summary
 
-In this lab, you explored the Pods associated with the VM and you ran commands inside the container to explore the associated storage and network interfaces. Finally, you ran a migration test on the VM that you previously created to watch it move from one worker node to another without shutting down (live migration).
+In this lab, you explored the VM and available actions for the VM. Finally, you ran a migration test on the VM that you previously created to watch it move from one worker node to another without shutting down (live migration).

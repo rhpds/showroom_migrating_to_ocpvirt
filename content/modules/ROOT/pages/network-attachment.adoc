@@ -24,9 +24,9 @@ At a high level, this is done by configuring the host networking, such as creati
 
 To save time to perform all the tasks, NMState Operator was preinstalled for you.
 
-. Navigate to *Operators* -> *Installed Operators* and select *NMstate Operator*
+. Navigate to *Operators* -> *Installed Operators* and select *Kubernetes NMstate Operator*. You may need to select *All Projects* in the *Projects* drop-down to see the installed operator.
 
-. Switch to *NMstate* tab and ensure it is in available status.
+. Switch to *NMState* tab and ensure it is in available status.
 
 == Create Linux Bridge on Worker Nodes
 
@@ -49,6 +49,7 @@ image::_images/Networking/12_nodenetworkconfigurationpolicies.png[]
 +
 image::_images/Networking/13_Create_NNCP.png[]
 
+. Click on *Edit YAML*.
 . Copy and paste the following content into the editor:
 +
 [source,yaml]
@@ -81,9 +82,8 @@ This configuration uses the `enp3s0` interface on the worker nodes to create a L
 
 . Click *Create*.
 
-. Watch the *Conditions* section until the *Available* status changes to `True`:
-+
-image::_images/Networking/14_Status_NNCP.png[]
+. Click on the *YAML* tab, scroll down and wait for the condition to read *3/3 nodes successfully configured*.
+. Click *Cancel*.
 
 == Create Network Attachment Definition
 
@@ -98,7 +98,7 @@ image::_images/Networking/01_NAD_Dashboard.png[]
 
 . IMPORTANT: Select project `vmexamples`
 
-. Complete the form for the `vmexamples` project as follows, then click *Create network attachment definition*:
+. Complete the form for the `vmexamples` project as follows, then click *Create*:
 * *Name*: `flatnetwork`
 * *Network Type*: `CNV Linux Bridge`
 * *Bridge Name*: `br-flat`
@@ -142,6 +142,8 @@ Replace the IP which the IP assigned to the VM.
 [%nowrap]
 ----
 SSH-2.0-OpenSSH_8.7
+Invalid SSH identification string.
+curl: (56) Recv failure: Connection reset by peer
 ----
 
 == Summary
