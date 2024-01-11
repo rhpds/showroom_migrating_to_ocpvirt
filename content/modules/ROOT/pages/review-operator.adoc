@@ -56,7 +56,7 @@ There are three control plane and three workers in the OpenShift Cluster. In add
 +
 image::_images/Install/Worker0_Information.png[]
 +
-The bare-metal node is configured using RHCOS.
+The bare-metal node is configured using Red Hat Enterprise Linux CoreOS.
 
 . Select *Compute* -> *Bare Metal Hosts*:
 +
@@ -77,7 +77,7 @@ Ignore the "Registration error" message if it appears.
 
 To save time to perform the lab tasks, the operator was preinstalled for you.
 
-. Navigate to *Operator* -> *Installed Operators* and select *OpenShift Virtualization*
+. Navigate to *Operator* -> *Installed Operators* and select *OpenShift Virtualization*. If you don't see it you may need to switch to *All Projects* in the Projects drop down menu.
 
 . Click the *Details* tab to view information about the Operator:
 +
@@ -87,7 +87,7 @@ image::_images/Install/11_Details_1.png[]
 +
 image::_images/Install/11_Details_2.png[]
 +
-You can see the Namespace where the Operator was installed, operator status, operator deployments created during installation, operator ServiceAccounts, and the OperatorGroup.
+You can see the `Namespace` where the Operator was installed, operator status, operator `Deployments` created during installation, operator `ServiceAccounts`, and the `OperatorGroup`.
 
 . Scroll up and click the *Subscription* tab to view the subscription details:
 +
@@ -98,7 +98,7 @@ Subscribing an Operator to one or more namespaces makes the Operator available t
 
 == Examine PersistentVolumeClaims created by the Operator
 
-During the installation of the Operator, some PersistentVolumeClaims for different Linux distributions are created:
+During the installation of the Operator, some `PersistentVolumeClaims` for different Linux distributions are created:
 
 * Red Hat Enterprise Linux 8.0+
 * Red Hat Enterprise Linux 9.0
