@@ -65,41 +65,12 @@ Prerequisites for Red Hat Virtualization are described in the following link:htt
 Prerequisites for VMWare are described in the following link:https://access.redhat.com/documentation/en-us/migration_toolkit_for_virtualization/2.4/html/installing_and_using_the_migration_toolkit_for_virtualization/prerequisites#vmware-prerequisites_mtv[link]
 
 
-== Install and configure the MTV Operator
+== Review MTV Operator
 
-. Navigate to *Operators* -> *OperatorHub* and filter for `Migration Toolkit for Virtualization`
-+
-image::_images/MTV/01_OperatorHub.png[]
-. Click the tile appeared and press *Install*
-+
-image::_images/MTV/02_Operator.png[]
+Operator was preinstalled to be ued in this lab.
 
-. Review the _Custom Resources Definition_ which are going to be created and without modify any option press *Install*
-+
-image::_images/MTV/03_Operator_Install.png[]
-+
-[IMPORTANT]
-Select version `release-v2.4`
+. Navigate to *Operators* -> *Installed Operators* and review the `Migration Toolkit for Virtualization` operator
 
-. Like others Operators after the installation is required to create a Controller. Press *Create ForkliftController* for that purpose.
-+
-image::_images/MTV/04_Operator_Installed.png[]
-
-. In the next screen press *Create* without modify any value
-+
-image::_images/MTV/05_ForkliftController.png[]
-
-. Ensure the `Status` is `Running,Successful`
-+
-image::_images/MTV/06_ForkliftController_Status.png[]
-
-. Refresh web console when the banner appears
-+
-image::_images/MTV/06_ForkliftController_Webconsole.png[]
-
-. A left menu called *Migration* will appear
-+
-image::_images/MTV/07_MTV_Left_Menu.png[]
 
 == Migrating from Red Hat Virtualization
 
@@ -141,7 +112,7 @@ image::_images/MTV/93_MTV_Create_Provider.png[]
 . Select *Red Hat Virtualization* and fill with the following information
 +
 .. *Name*: `rhvcnv`
-.. *RHV Manager host name or IP address*: `rhvm-pub.cnv.infra.opentlc.com`
+.. *RHV Manager host name or IP address*: `https://rhvm-pub.cnv.infra.opentlc.com/ovirt-engine/api`
 .. *RHV Manager user name*: `migtoocpvirt@internal`
 .. *RHV Manager password*: `{rhv_password}`
 .. Check `Skip certificate validation (if checked, the provider's certificate won't be validated)`
@@ -266,7 +237,7 @@ image::_images/MTV/30_Migrated_VM_RHV_Console.png[]
 .. Navigate to *Networking* -> *Services* and press *Create Service*
 ... Fill with the following YAML
 +
-[%nowrap]
+[%nowrap,subs="attributes"]
 ----
 apiVersion: v1
 kind: Service
@@ -381,12 +352,12 @@ image::_images/MTV/93_MTV_Create_Provider.png[]
 
 . Select *VMware* on the *Provider type* dropdown and fill the following data:
 .. *Name*: `vmware`
-.. *vCenter host name or IP address*: `portal.vc.opentlc.com`
+.. *vCenter host name or IP address*: `https://portal.vc.opentlc.com/sdk`
 .. *vCenter user name*: `migtoocpvirt@vc.opentlc.com`
 .. *vCenter password*: `{vcenter_password}`
 .. *VDDK init image*: `image-registry.openshift-image-registry.svc:5000/vmexamples/vddk:latest`
 .. Check `Skip certificate validation (if checked, the provider's certificate won't be validated)`
-.. *SHA-1 fingerprint*: `C7:BF:C2:DD:CD:73:1C:22:DC:D1:5A:DD:EA:64:21:C1:97:FB:F0:9C`
+.. *SHA-1 fingerprint*: `{vcenter_fingerprint}`
 +
 image::_images/MTV/94_MTV_Fill_Dialog.png[]
 .  Press *Create* and wait till the *Status* column is changed to `Ready`
@@ -673,7 +644,7 @@ image::_images/MTV/124_RHOSP_VMs_List.png[]
 
 The last Virtual Machine to be migrated is a database running in the Hypervisor node.
 
-. Connect to the hypervisor with the user lab-user and the password {password}
+. Connect to the hypervisor with the user lab-user and the password {ssh_password}
 +
 [%nowrap]
 ----
