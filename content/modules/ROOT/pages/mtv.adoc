@@ -143,7 +143,7 @@ image::_images/MTV/93_MTV_Create_Provider.png[]
 .. *Name*: `rhvcnv`
 .. *RHV Manager host name or IP address*: `rhvm-pub.cnv.infra.opentlc.com`
 .. *RHV Manager user name*: `migtoocpvirt@internal`
-.. *RHV Manager password*: `%rhv_password%`
+.. *RHV Manager password*: `{rhv_password}`
 .. Check `Skip certificate validation (if checked, the provider's certificate won't be validated)`
 
 . Ensure the provider is on status `Ready`
@@ -209,7 +209,7 @@ image::_images/MTV/18_Migration_Plan_General.png[]
 . On the next step *VM selection* and *Filter* select `All Datacenters`
 + 
 image::_images/MTV/19_Migration_Plan_VM_Selection.png[]
-. Fill the field *Filter by VM* with the value `%guid%` and select the VM.
+. Fill the field *Filter by VM* with the value `{guid}` and select the VM.
 +
 image::_images/MTV/20_Migration_Plan_VM_Select_VM.png[]
 
@@ -271,11 +271,11 @@ image::_images/MTV/30_Migrated_VM_RHV_Console.png[]
 apiVersion: v1
 kind: Service
 metadata:
-  name: webrhv-%guid%
+  name: webrhv-{guid}
   namespace: vmexamples
 spec:
   selector:
-    vm.kubevirt.io/name: webrhv-%guid%
+    vm.kubevirt.io/name: webrhv-{guid}
   ports:
     - protocol: TCP
       port: 80
@@ -284,7 +284,7 @@ spec:
 ... Press *Create*
 .. Navigate to *Networking* -> *Routes* and press *Create Route*. Fill the following information:
 ... *Name*: `route-webrhv`
-... *Service*: `webrhv-%guid%`
+... *Service*: `webrhv-{guid}`
 ... *Target port*: `80 -> 80 (TCP)`
 ... Press *Create*
 +
@@ -383,7 +383,7 @@ image::_images/MTV/93_MTV_Create_Provider.png[]
 .. *Name*: `vmware`
 .. *vCenter host name or IP address*: `portal.vc.opentlc.com`
 .. *vCenter user name*: `migtoocpvirt@vc.opentlc.com`
-.. *vCenter password*: `%vcenter_password%`
+.. *vCenter password*: `{vcenter_password}`
 .. *VDDK init image*: `image-registry.openshift-image-registry.svc:5000/vmexamples/vddk:latest`
 .. Check `Skip certificate validation (if checked, the provider's certificate won't be validated)`
 .. *SHA-1 fingerprint*: `C7:BF:C2:DD:CD:73:1C:22:DC:D1:5A:DD:EA:64:21:C1:97:FB:F0:9C`
@@ -563,7 +563,7 @@ image::_images/MTV/93_MTV_Create_Provider.png[]
 .. *Name*: `rhosp`
 .. *OpenStack Identity server URL*: `https://api.osp01.prod.dal10.ibm.infra.opentlc.com:13000/v3`
 .. *OpenStack username*: `migtoocpvirt`
-.. *OpenStack password*: `%rhv_password%`
+.. *OpenStack password*: `{rhv_password}`
 .. *Domain*: `Default`
 .. *Project*: `migtoocpvirt`
 .. *Region*: `regionOne`
@@ -673,7 +673,7 @@ image::_images/MTV/124_RHOSP_VMs_List.png[]
 
 The last Virtual Machine to be migrated is a database running in the Hypervisor node.
 
-. Connect to the hypervisor with the user lab-user and the password %password%
+. Connect to the hypervisor with the user lab-user and the password {password}
 +
 [%nowrap]
 ----
@@ -759,7 +759,7 @@ database.qcow2                                                                  
 +
 [%nowrap]
 ----
-Already on project "vmexamples" on server "https://api.%guid%.dynamic.opentlc.com:6443".
+Already on project "vmexamples" on server "https://api.{guid}/dynamic.opentlc.com:6443".
 ----
 
 . Get the URL address for the CDI (_Container Disk Importer_)
@@ -774,7 +774,7 @@ Already on project "vmexamples" on server "https://api.%guid%.dynamic.opentlc.co
 [%nowrap]
 ----
 NAME              HOST/PORT                                                      PATH   SERVICES          PORT    TERMINATION          WILDCARD
-cdi-uploadproxy   cdi-uploadproxy-openshift-cnv.apps.%guid%.dynamic.opentlc.com          cdi-uploadproxy   <all>   reencrypt/Redirect   None
+cdi-uploadproxy   cdi-uploadproxy-openshift-cnv.apps.{guid}.dynamic.opentlc.com          cdi-uploadproxy   <all>   reencrypt/Redirect   None
 ----
 
 . Install the `virtctl` tool
