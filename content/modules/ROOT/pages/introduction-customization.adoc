@@ -56,12 +56,10 @@ Even though this template has a disk already available, we want to import a diff
 ... *Disk source*: `URL (creates PVC)`
 ... *URL*: `http://192.168.123.100:81/Fedora35.qcow2`
 ... *Disk size*: 30 GiB
-
 +
 image::_images/Create_VM_URL/01_Create_VM_Boot_Source.png[]
-
 +
-Press *Next*
+Press *Customize VirtualMachine parameters*
 
 . Review the *Overview* tab with the default configuration from the template
 +
@@ -111,6 +109,7 @@ image::_images/Create_VM_URL/04_Wizard_Storage_settings.png[]
 * The *StorageClass* indicates the type of storage that is backing the VM disk. This will be different for each storage provider, and some storage providers can have multiple storage classes representing different features, performance, and other capabilities.
 * *Optimized StorageProfile Settings* indicate to use the clone strategy and volume mode indicated for the storage type. These are provided by Red Hat for many CSI providers, but can also be customized for your use cases.
 
+. Click *Cancel* to close the Disks dialog.
 . Navigate to the *Scripts* tab. This tab is used to apply guest OS customization, such as cloud-init or Sysprep, at deployment time.
 +
 image::_images/Create_VM_URL/05_Wizard_Scripts.png[]

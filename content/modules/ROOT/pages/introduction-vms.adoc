@@ -5,7 +5,7 @@
 
 :numbered:
 
-This lab will introduce you to the basics of creating VMs in OpenShift Virtualization. You will see how the web console guides you through the whole process and how easy it is to review VM properties and do some basic customization. In the next lab you will customize the VMs a little bit further.
+This lab will introduce you to the basics of creating VMs in OpenShift Virtualization. You will see how the web console guides you through the whole process and how easy it is to review VM properties and do some basic customizations. In the next lab you will customize the VMs a little bit further.
 
 This lab will show two methods for provisioning virtual machines, however, there are many different ways, and they are not limited to just what is shown here. All VM provisioning methods work with all supported operating systems.
 
@@ -68,7 +68,7 @@ image::_images/Create_VM_PVC/02_OCP_Virt_Dashboard.png[]
 +
 image::_images/Create_VM_PVC/03_Create_Project.png[]
 
-. Click *Create VirtualMachine*, and a dashboard will appear showing the available pre-defined VM templates. 
+. Click *Create VirtualMachine*, then select *From Template*, and a dashboard will appear showing the available pre-defined VM templates. 
 +
 Reviewing the list of available templates you’ll notice that some have a blue badge which indicates "Source available". These are templates which are using the automatically downloaded and stored template disks reviewed in the previous page. If you were deploying in your own environment, you have the option of preventing these from being created and/or removing those source disks, followed by creating and uploading custom disks for your organization.
 +
@@ -100,7 +100,7 @@ The IP address of the virtual machine on the software-defined network (SDN) is a
 +
 image::_images/Create_VM_PVC/10_Fedora_Details.png[]
 
-==== Access Virtual Machine Console
+=== Access Virtual Machine Console
 
 . Click the *Console* tab to access the VM's console:
 +
@@ -155,14 +155,14 @@ image::_images/Create_VM_PVC/19_Fedora_Agent_Details.png[]
 +
 image::_images/Create_VM_PVC/19_Fedora_Metrics.png[]
 
-==== Examine Resources Associated with the Virtual Machine
+=== Examine Resources Associated with the Virtual Machine
 
 The tab *Configuration* it is the entry point to obtain information about the resources of the Virtual Machine. It includes five subtabs:
 
+* *Disks*: It lists the disks attached to the system and allows to add new disks to the system. If the guest is configured with the agent, it lists the filesystems and the utilization.
+* *Network interfaces*: It shows the current network interfaces configured for the VM and add new ones.
 * *Scheduling*: It includes advanced configuration indicating where the VM should run and the strategy to follow for eviction. This is used to configure (anti)affinity rules, configure node selectors and tolerations, and other behaviors that affect which cluster nodes the VM can be scheduled to.
 * *Environment*: It is possible to attach _ConfigMaps_, _Secrets_, and _Service Accounts_ as extra disks. This is useful when passing configuration data to the application(s) running in the virtual machine.
-* *Network interfaces*: It shows the current network interfaces configured for the VM and add new ones.
-* *Disks*: It lists the disks attached to the system and allows to add new disks to the system. If the guest is configured with the agent, it lists the filesystems and the utilization.
 * *Scripts*: This tab allows us to configure _cloud-init_ for Linux or _sys-prep_ for Microsoft Windows, including setting the commands to be executed on the first boot, such as the injection of SSH keys, installation of applications, network configuration, and more.
 
 . Examine the network interfaces attached to the VM by clicking on the subtab *Network interfaces:
@@ -211,7 +211,7 @@ image::_images/Create_VM_PVC/29_Windows_2k9_Parameters.png[]
 . Keep the `Disk source` size disk to the default value *60 GiB*
 . Ensure the `Mount Windows drivers disk` is enabled. This is required to install Windows systems, which will provide the drivers for VirtIO.
 
-. Press *Next* after filling in the parameters.
+. Press *Customize VirtualMachine parameters* after filling in the parameters.
 +
 image::_images/Create_VM_PVC/30_Windows_2k9_Parameters_Filled.png[]
 
