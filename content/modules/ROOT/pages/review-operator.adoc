@@ -1,10 +1,10 @@
-== Environment Review and OpenShift Virtualization Operator Review
+== Environment Overview and OpenShift Virtualization Operator Review
 
 :numbered:
 
 == Introduction to Operator Installation
 
-In this lab, you review the OpenShift Operator that installs Red Hat^(R)^ OpenShift^(R)^ Virtualization for Red Hat OpenShift Container Platform 4.
+In this lab, you review the OpenShift operator that is used to install Red Hat^(R)^ OpenShift^(R)^ Virtualization for Red Hat OpenShift Container Platform.
 
 .Goals
 * Become familiar with the cluster requirements for Red Hat OpenShift Virtualization
@@ -16,19 +16,18 @@ In this lab, you review the OpenShift Operator that installs Red Hat^(R)^ OpenSh
 
 === Supported Platforms
 
-* On-premise bare metal servers
-
-* Amazon Web Services bare metal instances. See link:https://access.redhat.com/articles/6409731[Deploy OpenShift Virtualization on AWS Bare Metal Nodes for details].
-
-* IBM Cloud Bare Metal Servers. See link:https://access.redhat.com/articles/6738731[Deploy OpenShift Virtualization on IBM Cloud Bare Metal Nodes for details].
+* On-premises bare metal servers
+* Amazon Web Services bare metal instances. See link:https://access.redhat.com/articles/6409731[Deploy OpenShift Virtualization on AWS Bare Metal Nodes] for details.
+* IBM Cloud Bare Metal Servers. See link:https://access.redhat.com/articles/6738731[Deploy OpenShift Virtualization on IBM Cloud Bare Metal Nodes] for details.
 
 [NOTE]
+====
 Installing OpenShift Virtualization on AWS bare metal instances or on IBM Cloud Bare Metal Servers is a Technology Preview feature only. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. Red Hat does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-
+====
 
 === Verify Requirements
 
-Before you install OpenShift Virtualization for Red Hat OpenShift Container Platform 4, make sure that your Red Hat OpenShift Container Platform cluster meets the following requirements:
+Before you install OpenShift Virtualization for Red Hat OpenShift Container Platform, make sure that your Red Hat OpenShift Container Platform cluster meets the following requirements:
 
 * CPU requirements
 ** Supported by Red Hat Enterprise Linux (RHEL) 8
@@ -44,16 +43,14 @@ Before you install OpenShift Virtualization for Red Hat OpenShift Container Plat
 [NOTE]
 If your cluster uses worker nodes with different CPUs, live migration failures can occur because different CPUs have different capabilities. 
 
-
 === Review Nodes and Machines
 
 . Navigate to {ocp_url} and login with user `admin` and password `{ocp_password}`
-
 . From the navigation menu, select *Compute* -> *Nodes*:
 +
 image::_images/Install/Compute_Nodes.png[]
 +
-There are three master and three workers in the OpenShift 4 Cluster. In addition, the `ipmi` (Intelligent Platform Management Interface) is being used to manage the bare-metal nodes.
+There are three control plane and three workers in the OpenShift Cluster. In addition, the `ipmi` (Intelligent Platform Management Interface) is being used to manage the bare-metal nodes.
 
 . Click a worker node to obtain resource information about the node, and navigate to the *Details* tab to review the information about the operating system:
 +
@@ -90,7 +87,7 @@ image::_images/Install/11_Details_1.png[]
 +
 image::_images/Install/11_Details_2.png[]
 +
-You can see the Namespace where the Operator was installed, the status, the different Operator deployments created during the installation, the Operator ServiceAccounts created, and the OperatorGroup.
+You can see the Namespace where the Operator was installed, operator status, operator deployments created during installation, operator ServiceAccounts, and the OperatorGroup.
 
 . Scroll up and click the *Subscription* tab to view the subscription details:
 +
@@ -99,9 +96,9 @@ image::_images/Install/12_Subscription.png[]
 [NOTE]
 Subscribing an Operator to one or more namespaces makes the Operator available to developers on your cluster.
 
-== Examine PersistentVolumeClaims Created by Operator
+== Examine PersistentVolumeClaims created by the Operator
 
-During the installation of the Operator, some PersistentVolumeClaims for different distributions are created:
+During the installation of the Operator, some PersistentVolumeClaims for different Linux distributions are created:
 
 * Red Hat Enterprise Linux 8.0+
 * Red Hat Enterprise Linux 9.0
