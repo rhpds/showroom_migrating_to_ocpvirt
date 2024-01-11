@@ -1,25 +1,26 @@
 ---
 site:
-  title: Showroom Template Demo
-  url: https://redhat-scholars.github.io/course-template
+  title: Migrating to OpenShift Virtualization
   start_page: modules::index.adoc
 
 content:
   sources:
     - url: ./
+      branches: HEAD
       start_path: content
 
-# asciidoc:
-#   attributes:
-#     release-version: master
-#     page-pagination: true
-#   extensions:
-#     - ./content/supplemental-ui/lib/tab-block.js
-#     - ./content/supplemental-ui/lib/remote-include-processor.js
+asciidoc:
+  attributes:
+    lab_name: Migrating to OpenShift Virtualization
+    release-version: master
+    page-pagination: true
+  extensions:
+    - ./content/supplemental-ui/lib/tab-block.js
+    - ./content/supplemental-ui/lib/remote-include-processor.js
 
 ui:
   bundle:
-    url: https://github.com/tonykay/demo-gpte-classroom-ui/raw/main/releases/download/v0.0.2/ui-bundle.zip
+    url: https://github.com/rhpds/showroom_theme_rh1/releases/download/v0.0.2/ui-bundle.zip
     snapshot: true
   supplemental_files:
     - path: ./content/supplemental-ui
