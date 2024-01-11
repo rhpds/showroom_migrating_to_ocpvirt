@@ -15,7 +15,6 @@ Notably, there are no restrictions on storage protocol (e.g. NFS, iSCSI, FC, etc
 
 image::_images/Storage/00_disk_concepts.png[]
 
-
 == Snapshots
 
 === Introduction
@@ -57,6 +56,7 @@ There is a warning about the `cloudinitdisk` not being included in the snapshot.
 +
 image::_images/Storage/11_VM_Snapshot_Dialog.png[]
 
+. Use `fedora02-snap` as the snapshot name.
 . Press *Save* and wait till the _Snapshot_ has been created and the *status* shows as `Succeeded`
 +
 image::_images/Storage/12_VM_Snapshot_Taken.png[]
@@ -110,6 +110,7 @@ image::_images/Storage/19_VM_Clone_Dialog.png[]
 [NOTE]
 Notice the VM, if is powered on, it will be stopped to perform the clone. If you have a snapshot of the VM, you can also create a clone from the snapshot without powering off the VM.
 
+. Leave the defaults and click *Clone*.
 . A new VM is created, the disks are cloned and automatically the portal will redirect you to the new VM.
 +
 image::_images/Storage/20_VM_Cloned.png[]
