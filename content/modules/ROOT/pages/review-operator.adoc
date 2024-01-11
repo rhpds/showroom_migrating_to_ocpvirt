@@ -47,7 +47,7 @@ If your cluster uses worker nodes with different CPUs, live migration failures c
 
 === Review Nodes and Machines
 
-. Navigate to %ocp_url% and login with user `admin` and password received in the mail.
+. Navigate to %ocp_url% and login with user `admin` and password `%ocp_password`
 
 . From the navigation menu, select *Compute* -> *Nodes*:
 +

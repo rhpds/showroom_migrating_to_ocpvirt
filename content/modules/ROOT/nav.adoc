@@ -1,7 +1,7 @@
 * xref:review-operator.adoc[Review Operator]
 * xref:introduction-vms.adoc[Introduction to VMs]
 * xref:introduction-customization.adoc[Introduction to Customization]
-* xref:pods-review.adoc[Pods Review]
+* xref:vm-management.adoc[VM management]
 * xref:network-attachment.adoc[Network Attachment]
 * xref:storage-management.adoc[Storage Management]
 * xref:mtv.adoc[Migrating to OpenShift Virtualization]
