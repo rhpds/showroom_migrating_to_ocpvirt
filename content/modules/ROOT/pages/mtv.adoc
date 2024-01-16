@@ -117,6 +117,8 @@ image::_images/MTV/93_MTV_Create_Provider.png[]
 .. *RHV Manager password*: `{rhv_password}`
 .. Check `Skip certificate validation (if checked, the provider's certificate won't be validated)`
 
+. Click *Create provider*.
+. Navigate back to *Migration* -> *Providers for virtualization*
 . Ensure the provider is on status `Ready`
 +
 image::_images/MTV/11_Provider_RHV.png[]
@@ -135,13 +137,14 @@ image::_images/MTV/96_MTV_NetworkMaps.png[]
 .. *Name*: `mapping-public`
 .. *Source provider*: `rhvcnv`
 .. *Target provider*: `host`
+. Click *+ Add*
 .. *Source networks*: `Public`
 .. *Target namespaces / networks*: `Pod network (default)`
 . Press *Create* 
 +
 image::_images/MTV/13_Create_Network_Mapping_RHV.png[]
 
-. Ensure the status is `OK`
+. Ensure the status is `Ready`
 +
 image::_images/MTV/14_Confirm_Network_Mapping_RHV.png[]
 
@@ -152,13 +155,14 @@ image::_images/MTV/14_Confirm_Network_Mapping_RHV.png[]
 .. *Name*: `mapping-vmstore00`
 .. *Source provider*: `rhvcnv`
 .. *Target provider*: `host`
+. Click *+ Add*
 .. *Source storage*: `vmstore00`
 .. *Target storage classes*: `ocs-storagecluster-ceph-rbd (default)`
 . Press *Create* 
 +
 image::_images/MTV/15_Create_Storage_Mapping_RHV.png[]
 
-. Ensure the status is `OK`
+. Ensure the status is `Ready`
 +
 image::_images/MTV/16_Confirm_Storage_Mapping_RHV.png[]
 
@@ -177,9 +181,13 @@ image::_images/MTV/102_Create_VMWARE_Plan.png[]
 .. *Target namespace*: `vmexamples`
 +
 image::_images/MTV/18_Migration_Plan_General.png[]
+
+.. Click *Next*
 . On the next step *VM selection* and *Filter* select `All Datacenters`
 + 
 image::_images/MTV/19_Migration_Plan_VM_Selection.png[]
+
+.. Click *Next*
 . Fill the field *Filter by VM* with the value `{guid}` and select the VM.
 +
 image::_images/MTV/20_Migration_Plan_VM_Select_VM.png[]
@@ -198,7 +206,6 @@ image::_images/MTV/22_Migration_Plan_VM_Select_Storage.png[]
 +
 image::_images/MTV/23_Migration_Plan_Review.png[]
 
-
 . After the plan is created press the button *Start* and confirm in the dialog which appears.
 +
 image::_images/MTV/24_Migration_Plan_Start.png[]
@@ -209,27 +216,28 @@ image::_images/MTV/25_Migration_Plan_Completed.png[]
 +
 
 [NOTE]
-You can go back to OpenShift console and check the pods on *Workloads* -> *Pods* meantime the process is running.
+You can go back to OpenShift console and check the pods on *Workloads* -> *Pods* while the process is running.
 
-=== Review VirtualMachine migrated
+=== Review the migrated VirtualMachine
 
-. Return to the OpenShift console and navigate to *Virtualization* -> *VirtualMachines*
+. Return to the OpenShift console and navigate to *Virtualization* -> *VirtualMachines*. You may need to select the *Project* `vmexamples` from the Project drop-down.
 +
 image::_images/MTV/26_Migrated_VM_RHV.png[]
 
-. Click on the migrated Virtual Machine to obtain information about it.
+. Click on the migrated Virtual Machine to review Virtual Machine properties.
 +
 image::_images/MTV/27_Migrated_VM_RHV_Overview.png[]
 
-. Navigate to tab *Network Interfaces* to review the interface configured
+. Navigate to tab *Configuration* then on the left select *Network Interfaces* to review the configured network interface
 +
 image::_images/MTV/28_Migrated_VM_RHV_Network.png[]
 
-. Navigate to tab *Disks* to review the disk migrated
+. Navigate to tab *Configuration* then on the left select *Disks* to review the migrated disks
 +
 image::_images/MTV/29_Migrated_VM_RHV_Disks.png[]
 
-. Start the VM using the *Actions* dropdown and login to the VM using user `root` and password `R3dh4t1!`
+. Start the VM using the *Actions* dropdown.
+. When the VM is running switch to the *Console* tab and login to the VM using user `root` and password `R3dh4t1!`
 +
 image::_images/MTV/30_Migrated_VM_RHV_Console.png[]
 
@@ -253,28 +261,34 @@ spec:
       targetPort: 80
 ----
 ... Press *Create*
-.. Navigate to *Networking* -> *Routes* and press *Create Route*. Fill the following information:
+.. Navigate to *Networking* -> *Routes* and press *Create Route*. Enter the following information:
 ... *Name*: `route-webrhv`
 ... *Service*: `webrhv-{guid}`
 ... *Target port*: `80 -> 80 (TCP)`
+... Click *Secure Route*
+... *TLS termination*: `Edge`
+... *Insecure trafic*: `Redirect`
 ... Press *Create*
-+
-[NOTE]
-Don't enable TLS.
 
-. Navigate to the URL generated
+. Navigate to the generated URL
 +
 image::_images/MTV/31_Migrated_VM_RHV_Route.png[]
 
 == Migrating from VMWare
 
-An haproxy with two web servers are running in a VMWare vCenter. Only the webs are going to be migrated, as the load balancing will be managed by OpenShift.
+In the last section you migrated a virtual machine from *Red Hat Virtualization*. In this section of the lab you are going to migrate a few virtual machines from *VMware vCenter*.
 
+The application that you are migrating consists of 3 virtual machines: a load balancer implemented by `haproxy` which directs traffic to two web server virtual machines.
 
+You will migrate only the web server virtual machines because load balancing will be managed natively by OpenShift.
+
+. In your terminal validate that both virtual machines are running (you can run this command many times to see how traffic is balanced between the two web servers):
++
 [%nowrap]
 ----
 $ curl http://webs.vc.opentlc.com
 Hello from VMware: I'm web01
+
 $ curl http://webs.vc.opentlc.com
 Hello from VMware: I'm web02
 ----
@@ -287,7 +301,6 @@ You must download the *VMware Virtual Disk Development Kit* (*VDDK*), build a VD
 
 [IMPORTANT]
 Storing the VDDK image in a public registry might violate the VMware license terms.
-
 
 . Navigate to *Builds* -> *ImageStreams*
 . Press *Create ImageStream*
@@ -305,7 +318,7 @@ metadata:
 ----
 
 . Navigate to *Builds* -> *BuildConfigs*
-. Press *Create BuildConfig*
+. Press *Create BuildConfig* and select the *YAML view* radio button at the top.
 +
 image::_images/MTV/40_Create_BC.png[]
 . Replace the YAML content with the following code
@@ -343,24 +356,27 @@ spec:
     - type: ConfigChange
 ----
 
+. Navigate to *Builds* -> *Builds* and wait until the build status is *Complete*.
 
-. Navigate in the left menu to *Migration* -> *Providers for virtualization*
+. Navigate to *Migration* -> *Providers for virtualization*
 . Select project `openshift-mtv`
 . Press *Create Provider* button in the top right. A dialog it will appear.
 +
 image::_images/MTV/93_MTV_Create_Provider.png[]
 
-. Select *VMware* on the *Provider type* dropdown and fill the following data:
+. Select *vSphere* for the *Provider type* and fill the following data:
 .. *Name*: `vmware`
-.. *vCenter host name or IP address*: `https://portal.vc.opentlc.com/sdk`
+.. *URL*: `https://portal.vc.opentlc.com/sdk`
+.. *VDDK init image*: `image-registry.openshift-image-registry.svc:5000/vmexamples/vddk:latest`
 .. *vCenter user name*: `migtoocpvirt@vc.opentlc.com`
 .. *vCenter password*: `{vcenter_password}`
-.. *VDDK init image*: `image-registry.openshift-image-registry.svc:5000/vmexamples/vddk:latest`
-.. Check `Skip certificate validation (if checked, the provider's certificate won't be validated)`
 .. *SHA-1 fingerprint*: `{vcenter_fingerprint}`
+.. Check `Skip certificate validation (if checked, the provider's certificate won't be validated)`
 +
 image::_images/MTV/94_MTV_Fill_Dialog.png[]
-.  Press *Create* and wait till the *Status* column is changed to `Ready`
+.  Press *Create*.
+. Navigate to *Migration* -> *Providers for virtualization*
+. Wait until the vmware *Status* column is `Ready`
 +
 image::_images/MTV/95_MTV_Provider_Added.png[]
 
@@ -371,12 +387,11 @@ Storage and networking are managed differently in VMware vSphere and Red Hat Ope
 These only need to be configured once and are then reused in subsequent VM Migration Plans.
 
 . Navigate in the left menu to *Migration* -> *NetworkMaps for virtualization* and press *Create NetworkMap*
-
-
 . Fill in the following information in the appeared dialog. Press *Create*.
 .. *Name*: `mapping-segment`
 .. *Source provider*: `vmware`
 .. *Target provider*: `host`
+.. Click on *+ add*
 .. *Source networks*: `segment-migrating-to-ocpvirt`
 .. *Target network*: `Pod network (default)`
 +
@@ -392,6 +407,7 @@ image::_images/MTV/98_List_VMWARE_Mapping_Network.png[]
 .. *Name*: `mapping-datastore`
 .. *Source provider*: `vmware`
 .. *Target provider*: `host`
+.. Click on *+ add*
 .. *Source storage*: `WorkloadDatastore`
 .. *Target storage classs*: `ocs-storagecluster-ceph-rbd (default)`
 +
@@ -403,10 +419,8 @@ image::_images/MTV/101_List_VMWARE_Mapping_Storage.png[]
 
 === Create Migration Plan
 
-. Create a Plan navigating to *Migration Plans*
+. Create a Plan by navigating to *Migration* -> *Plans for virtualization*
 . Press *Create plan*
-
-
 . On the wizard fill the following information on the *General* step
 .. *Plan name*: `move-webs-vmware`
 .. *Source provider*: `vmware`
@@ -443,46 +457,50 @@ image::_images/MTV/58_Ready_VMWARE_Plan.png[]
 image::_images/MTV/59_Completed_VMWARE_Plan.png[]
 +
 [NOTE]
-You can go back to OpenShift console and check the pods on *Workloads* -> *Pods* meantime the process is running.
+You can go back to OpenShift console and check the pods on *Workloads* -> *Pods* while the process is running.
 
-=== Review VirtualMachines migrated
+=== Review the migrated Virtual Machines
 
 . Return to the OpenShift Console to configure the VMs.
 
-. Navigate to *Virtualization* -> *VirtualMachines* and ensure the migrated VMs are there
+. Navigate to *Virtualization* -> *VirtualMachines* and ensure the migrated VMs are there - you may need to select the *Project* `vmexamples` from the *Project* drop-down.
 +
 image::_images/MTV/60_VMWARE_VMs_List.png[]
 
-. Access to the `web01` and navigate to the *YAML* tab
-. Find the `spec:` section and under the `template.metadata` add the following lines to label the VM resources:
+. Click on the virtual machine `web01` and switch to the *YAML* tab.
+. Find the `spec:` section and under the `template.metadata.labels` add the following lines to label the VM resources (unlike in the screenshot there are already two other labels present):
 +
 [%nowrap]
 ----
-      labels:
         env: vmware
 ----
-. *IMPORTANT*: Repeat the process for `web02`
+. Click *Save*
 +
 image::_images/MTV/61_VMWARE_VMs_YAML.png[]
+
+. *IMPORTANT*: Repeat the process for `web02`
 +
 [IMPORTANT]
-Labels affected by the `Service` are not the `VirtualMachine` objects but the `Pods`. That is why is needed to add inside `spec.template.metadata`
+====
+The `Service` looks for labels not the `VirtualMachine` objects but the `Pods` that run the virtual machine.. That is why is needed to add inside `spec.template.metadata`
+====
 
-. The VMs are configured with an static IP, it is needed to reconfigure them to use DHCP
+. The VMs are configured with an static IP, it is necessary to reconfigure them to use DHCP
 .. Start the VM `web01`
-.. Open `web01`, start the VM and access to the Console
+.. Open `web01` and switch to the *Console* tab
 ... Login with user `root` and password `R3dh4t1!`
-... Run the following commands
+... Run the following commands to switch to DHCP
 +
 [%nowrap]
 ----
-nmcli con del "Wired connection 1"
 nmcli con add type ethernet ifname eth0
+nmcli con del "Wired connection 1"
 ----
-... Review the IP address is `10.0.2.2` now
+... Verify that the IP address is `10.0.2.2` now by running `ip a`:
 +
 image::_images/MTV/62_VMWARE_VMs_DHCP.png[]
-.. *IMPORTANT*: Repeat the task for `web02`
+
+. *IMPORTANT*: Repeat the same steps for VM `web02`!
 
 . Navigate to *Networking* -> *Services* and press *Create service*
 . Replace the YAML with the following definition
@@ -502,17 +520,20 @@ spec:
       port: 80
       targetPort: 80
 ----
-. Press *Create* and navigate to *Routes* in the left menu
+. Press *Create* to create the service.
+. Navigate to *Networking* -> *Routes* in the left menu
 . Press *Create Route* and fill the following information:
 .. *Name*: `route-websvmware`
 .. *Service*: `websvmware`
 .. *Target port*: `80 -> 80 (TCP)`
+.. Select *Secure Route*
+.. Select *Edge* for *TLS termination*
+.. Select *Redirect* for *Insecure traffic*
+
 . Press *Create*
 +
-[NOTE]
-Don't enable TLS.
-+
 image::_images/MTV/63_VMWARE_VMs_Create_Route.png[]
+
 . Navigate to the address shown in *Location* field
 +
 image::_images/MTV/64_VMWARE_VMs_URL.png[]
@@ -526,28 +547,27 @@ You can try from another browser or incognito mode to try the load balancing.
 
 . Navigate in the left menu to *Migration* -> *Providers for virtualization*
 . Select project `openshift-mtv`
-. Press *Create Provider* button in the top right. A dialog it will appear.
-+
-image::_images/MTV/93_MTV_Create_Provider.png[]
-
-. Select *Red Hat OpenStack Platform* on the *Provider type* dropdown and fill the following data:
+. Press *Create Provider* button in the top right.
+. Select *OpenStack* fill the following data:
 .. *Name*: `rhosp`
-.. *OpenStack Identity server URL*: `https://api.osp01.prod.dal10.ibm.infra.opentlc.com:13000/v3`
+.. *URL*: `https://api.osp01.prod.dal10.ibm.infra.opentlc.com:13000/v3`
+.. *Authentication Type*: `Password`
 .. *OpenStack username*: `migtoocpvirt`
 .. *OpenStack password*: `{rhv_password}`
-.. *Domain*: `Default`
-.. *Project*: `migtoocpvirt`
 .. *Region*: `regionOne`
+.. *Project*: `migtoocpvirt`
+.. *Domain*: `Default`
 .. Check `Skip certificate validation (if checked, the provider's certificate won't be validated)`
 +
 image::_images/MTV/110_OpenStack_Create_Provider.png[]
-.  Press *Create* and wait till the *Status* column is changed to `Ready`
+
+.  Press *Create*.
+. Navigate back to *Migration* -> *Providers for virtualization* and wait until the *Status* column shows to `Ready`
 +
 image::_images/MTV/111_MTV_Provider_Added.png[]
 +
 [NOTE]
-It can take some minutes.
-
+This may take a few minutes.
 
 === Create Storage and Network Mapping
 
@@ -557,13 +577,14 @@ These only need to be configured once and are then reused in subsequent VM Migra
 
 . Navigate in the left menu to *Migration* -> *NetworkMaps for virtualization* and press *Create NetworkMap*
 
-
 . Fill in the following information in the appeared dialog. Press *Create*.
 .. *Name*: `mapping-internal`
-.. *Source provider*: `openstack`
+.. *Source provider*: `rhosp`
 .. *Target provider*: `host`
-.. *Source networks*: `internal`
+.. Click *+ Add*
+.. *Source networks*: `undefined/internal`
 .. *Target network*: `Pod network (default)`
+.. Click *Create*
 +
 image::_images/MTV/112_Add_RHOSP_Mapping_Network.png[]
 
@@ -575,10 +596,12 @@ image::_images/MTV/113_List_RHOSP_Mapping_Network.png[]
 
 . Fill in the following information. Press *Create*.
 .. *Name*: `mapping-tripleo`
-.. *Source provider*: `openstack`
+.. *Source provider*: `rhosp`
 .. *Target provider*: `host`
+.. Click *+ Add*
 .. *Source storage*: `tripleo`
 .. *Target storage classs*: `ocs-storagecluster-ceph-rbd (default)`
+.. Click *Create*
 +
 image::_images/MTV/114_Add_RHOSP_Mapping_Storage.png[]
 
@@ -588,13 +611,11 @@ image::_images/MTV/115_List_RHOSP_Mapping_Storage.png[]
 
 === Create Migration Plan
 
-. Create a Plan navigating to *Migration Plans*
+. Navigate to *Migration* -> *Plans for virtualization*.
 . Press *Create plan*
-
-
 . On the wizard fill the following information on the *General* step
 .. *Plan name*: `move-database2`
-.. *Source provider*: `openstack`
+.. *Source provider*: `rhosp`
 .. *Target provider*: `host`
 .. *Target namespace*: `vmexamples`
 . Press *Next*
@@ -621,48 +642,39 @@ image::_images/MTV/121_Finish_RHOSP_Plan.png[]
 +
 image::_images/MTV/122_Ready_RHOSP_Plan.png[]
 
-. Press *Start* to begin the migration of the two VMs.
+. Press *Start* to begin the migration of the virtual machine (click *Start* again in the confirmation popup)
 
 . After some minutes the migration is completed
 +
 image::_images/MTV/123_Completed_RHOSP_Plan.png[]
-
 +
 [NOTE]
-You can go back to OpenShift console and check the pods on *Workloads* -> *Pods* meantime the process is running.
+You can go back to OpenShift console and check the pods on *Workloads* -> *Pods* while the process is running.
 
-=== Review VirtualMachines migrated
+=== Review the migrated Virtual Machine
 
-. Return to the OpenShift Console to configure the VMs.
+. Return to the OpenShift Console to configure the VM.
 
-. Navigate to *Virtualization* -> *VirtualMachines* and ensure the migrated VMs are there
+. Navigate to *Virtualization* -> *VirtualMachines* and ensure the migrated VMs are there. You may need to switch to the `vmexamples` project to see the virtual machine.
 +
 image::_images/MTV/124_RHOSP_VMs_List.png[]
-
 
 == Migrate a VM running on KVM/libvirt
 
 The last Virtual Machine to be migrated is a database running in the Hypervisor node.
 
-. Connect to the hypervisor with the user lab-user and the password {ssh_password}
+. Connect to the hypervisor with the user `lab-user` and the password `{ssh_password}`:
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[~] $ ssh lab-user@192.168.123.1
-----
-+
-.Sample Output
-+
-[%nowrap]
-----
-[lab-user@hypervisor ~]$ 
+ssh lab-user@192.168.123.1
 ----
 
-. Test the access to the database from the terminal available for you
+. Test access to the database from the terminal panel:
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[lab-user@hypervisor ~]$ echo "show tables from classicmodels"|mysql -h192.168.3.252 -uroot -pr3dh4t1! 
+echo "show tables from classicmodels"|mysql -h192.168.3.252 -uroot -pr3dh4t1! 
 ----
 +
 .Expected Output
@@ -680,11 +692,11 @@ productlines
 products
 ----
 
-. List the disk used by the VM
+. List the disk used by the VM:
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[lab-user@hypervisor ~]$ sudo virsh domblklist legacy
+sudo virsh domblklist legacy
 ----
 +
 .Sample Output
@@ -698,10 +710,11 @@ products
 
 . Stop the VM and copy the disk to be the `ocp4-bastion` node
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[lab-user@hypervisor ~]$ sudo virsh shutdown legacy
-[lab-user@hypervisor ~]$ sudo scp /var/lib/libvirt/images/database.qcow2 root@192.168.123.100:
+sudo virsh shutdown legacy
+
+sudo scp /var/lib/libvirt/images/database.qcow2 root@192.168.123.100:
 ----
 +
 .Sample Output
@@ -709,58 +722,66 @@ products
 [%nowrap]
 ----
 Domain 'legacy' is being shutdown
-database.qcow2                                                                                                                             100% 1242MB 434.8MB/s   00:02    
+database.qcow2                     100% 1242MB 434.8MB/s   00:02    
 ----
 
-. Connect to the `ocp4-bastion` node
+. Connect to the `ocp4-bastion` node:
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[lab-user@hypervisor ~]$ sudo ssh root@192.168.123.100
+sudo ssh root@192.168.123.100
 ----
 
-. Switch to the `vmexamples`
+. Switch to the OpenShift project `vmexamples`:
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[root@ocp4-bastion ~]# oc project vmexamples
+oc project vmexamples
 ----
 +
 .Sample Output
 +
-[%nowrap]
+[%nowrap,subs=attributes]
 ----
-Already on project "vmexamples" on server "https://api.{guid}/dynamic.opentlc.com:6443".
+Now using project "vmexamples" on server "https://api.{guid}/dynamic.opentlc.com:6443".
 ----
 
 . Get the URL address for the CDI (_Container Disk Importer_)
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[root@ocp4-bastion ~]# oc get route -n openshift-cnv cdi-uploadproxy
+oc get route -n openshift-cnv cdi-uploadproxy
 ----
 +
 .Sample Output
 +
-[%nowrap]
+[%nowrap,subs=attributes]
 ----
 NAME              HOST/PORT                                                      PATH   SERVICES          PORT    TERMINATION          WILDCARD
 cdi-uploadproxy   cdi-uploadproxy-openshift-cnv.apps.{guid}.dynamic.opentlc.com          cdi-uploadproxy   <all>   reencrypt/Redirect   None
 ----
 
-. Install the `virtctl` tool
+. Install the `virtctl` tool (which is available for download on the OpenShift cluster)
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[root@ocp4-bastion ~]# URL=$(oc get route -n openshift-cnv hyperconverged-cluster-cli-download -o jsonpath={.spec.host})
-[root@ocp4-bastion ~]# curl -k -o - https://$URL/amd64/linux/virtctl.tar.gz | sudo tar -xvzf - -C /usr/local/bin/
+URL=$(oc get route -n openshift-cnv hyperconverged-cluster-cli-download -o jsonpath={.spec.host})
+
+curl -k -o - https://$URL/amd64/linux/virtctl.tar.gz | sudo tar -xvzf - -C /usr/local/bin/
 ----
 
 . Upload the `database.qcow2` file to OpenShift as a PVC
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[root@ocp4-bastion ~]# virtctl image-upload --image-path=database.qcow2 --pvc-name=database-pvc --uploadproxy-url=$(oc get route -n openshift-cnv cdi-uploadproxy  -o jsonpath={.spec.host}) --pvc-size=20G --access-mode=ReadWriteMany --block-volume --insecure
+virtctl image-upload \
+  --image-path=database.qcow2 \
+  --pvc-name=database-pvc \
+  --uploadproxy-url=$(oc get route -n openshift-cnv cdi-uploadproxy -o jsonpath={.spec.host}) \
+  --pvc-size=20G \
+  --access-mode=ReadWriteMany \
+  --block-volume \
+  --insecure
 ----
 +
 .Sample Output
@@ -777,41 +798,48 @@ Processing completed successfully
 Uploading database.qcow2 completed successfully
 ----
 
+. Disconnect from the `ocp4-bastion`:
++
+[source,sh,role=execute]
+----
+exit
+----
+
 . Go back to the OpenShift Console and navigate to *Virtualization* -> *VirtualMachines*
 . Press *Create* and select *From template*
 . Select *CentOS 7 VM* and then *Customize VirtualMachine*
 . Specify the following values:
 .. *Name*: `legacydatabase`
+.. Click on *Customize Virtual Machine*
 .. *Storage*:
 ... *Disk source*: `PVC (clone PVC)`
 ... *Persistent Volume Claim project*: `vmexamples`
 ... *Persistent Volume Claim name*: `database-pvc`
 ... *Disk size*: `30 GiB`
-. Press *Next*
-
+. Click *Customize VirtualMachine parameters*
 . Switch to tab *Network Interfaces* and press *Add Network Interface*
 . Fill the following data
 .. *Name*: `nic-flat`
 .. *Model*: `virtio`
 .. *Network*: `vmexamples/flatnetwork`
 .. *Type*: `Bridge`
-. Press *Save*
+. Click *Save*
 +
 image::_images/MTV/71_Create_Database_VM_Network.png[]
 
-. Remove the `default` interface
+. Delete the `default` interface
 +
 image::_images/MTV/72_Create_Database_VM_Network2.png[]
 
-. Press *Create VirtualMachine*
+. Click *Create VirtualMachine*
 +
 image::_images/MTV/73_Create_Database_VM_Created.png[]
 
-. Disconnect from `ocp4-bastion` and try to connect to the MySQL again
+. From your terminal panel try to connect to the MySQL again:
 +
-[%nowrap]
+[%nowrap,role=execute]
 ----
-[lab-user@hypervisor ~]$ echo "show tables from classicmodels"|mysql -h192.168.3.252 -uroot -pr3dh4t1! 
+echo "show tables from classicmodels"|mysql -h192.168.3.252 -uroot -pr3dh4t1! 
 ----
 +
 .Sample Output
@@ -829,4 +857,4 @@ productlines
 products
 ----
 
-The VM was migrated correctly and is using the same IP and network.
+The VM has been migrated correctly and is using the same IP and network.
