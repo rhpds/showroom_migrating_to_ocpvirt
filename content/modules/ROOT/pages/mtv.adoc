@@ -471,7 +471,7 @@ To save time and don't wait to the VMWare migration, the VMs have been already m
 image::_images/MTV/60_VMWARE_VMs_List.png[]
 
 . Click on the virtual machine `web01` and switch to the *YAML* tab.
-. Find the `spec:` section and under the `template.metadata.labels` add the following lines to label the VM resources (unlike in the screenshot there are already two other labels present):
+. Find the `spec:` section and under the `template.metadata.labels` add the following lines to label the VM resources:
 +
 [%nowrap]
 ----
@@ -514,7 +514,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: websvmware
-  namespace: vmexamples
+  namespace: vmimported
 spec:
   selector:
     env: vmware
