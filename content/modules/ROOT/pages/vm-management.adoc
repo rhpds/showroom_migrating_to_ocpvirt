@@ -63,7 +63,7 @@ image::_images/Pods_Migration/35_VM_Resources.png[]
 +
 image::_images/Pods_Migration/36_VM_Resources_Dialog.png[]
 
-. Update the _CPU cores_ to `2` and the _Memory_ to `3 GiB` and press *Save*.
+. Update the _CPU cores_ to `1` and the _Memory_ to `2 GiB` and press *Save*.
 
 . Scrolling up, the _Virtual Machine_ will show this message indicating it has to be rebooted to apply the changes.
 +

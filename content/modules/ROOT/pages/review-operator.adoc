@@ -16,26 +16,34 @@ In this lab, you review the OpenShift operator that is used to install Red Hat^(
 
 === Supported Platforms
 
-* On-premises bare metal servers
-* Amazon Web Services bare metal instances. See link:https://access.redhat.com/articles/6409731[Deploy OpenShift Virtualization on AWS Bare Metal Nodes] for details.
+* On-premises bare metal servers. See link:https://docs.openshift.com/container-platform/4.14/installing/installing_bare_metal/preparing-to-install-on-bare-metal.html#virt-planning-bare-metal-cluster-for-ocp-virt_preparing-to-install-on-bare-metal[Planning a bare metal cluster for OpenShift Virtualization]
+* Amazon Web Services bare metal instances. See link:https://docs.openshift.com/container-platform/4.14/installing/installing_aws/installing-aws-customizations.html#installing-aws-customizations[Installing a cluster on AWS with customizations.] for details.
+[NOTE]
++
+====
+Installing OpenShift Virtualization on IBM Cloud® Bare Metal Servers is a Technology Preview feature only.
+====
 * IBM Cloud Bare Metal Servers. See link:https://access.redhat.com/articles/6738731[Deploy OpenShift Virtualization on IBM Cloud Bare Metal Nodes] for details.
-
++
 [NOTE]
 ====
-Installing OpenShift Virtualization on AWS bare metal instances or on IBM Cloud Bare Metal Servers is a Technology Preview feature only. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. Red Hat does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
+OpenShift Virtualization is also supported on Red Hat OpenShift Service on AWS (ROSA) Classic clusters, which have the same configuration requirements as AWS bare-metal clusters.
 ====
+
 
 === Verify Requirements
 
 Before you install OpenShift Virtualization for Red Hat OpenShift Container Platform, make sure that your Red Hat OpenShift Container Platform cluster meets the following requirements:
 
 * CPU requirements
-** Supported by Red Hat Enterprise Linux (RHEL) 8
-** Support for Intel 64 or AMD64 CPU extensions
-** Intel VT or AMD-V hardware virtualization extensions enabled
+** Supported by Red Hat Enterprise Linux (RHEL) 9
+** Support for AMD and Intel 64-bit architectures (x86-64-v2).
+** Support for Intel 64 or AMD64 CPU extensions.
+** Intel VT or AMD-V hardware virtualization extensions enabled.
 ** NX (no execute) flag enabled
 * Storage requirements
 ** Supported by OpenShift Container Platform
+** Red Hat OpenShift Data Foundation: You must create a dedicated storage class for Windows virtual machine disks. See link:https://access.redhat.com/articles/6978371[Optimizing ODF PersistentVolumes for Windows VMs] for details.
 
 * Operating system requirements
 ** Red Hat Enterprise Linux CoreOS (RHCOS) installed on worker nodes
@@ -45,7 +53,7 @@ If your cluster uses worker nodes with different CPUs, live migration failures c
 
 === Review Nodes and Machines
 
-. Navigate to {ocp_url} and login with user `admin` and password `{ocp_password}`
+. Navigate to {ocp_url}[window=_blank] and login with user `admin` and password `{ocp_password}`
 . From the navigation menu, select *Compute* -> *Nodes*:
 +
 image::_images/Install/Compute_Nodes.png[]
@@ -98,7 +106,7 @@ Subscribing an Operator to one or more namespaces makes the Operator available t
 
 == Examine PersistentVolumeClaims created by the Operator
 
-During the installation of the Operator, some `PersistentVolumeClaims` for different Linux distributions are created:
+During the installation of the Operator, some `VolumeSnapshots` for different Linux distributions are created:
 
 * Red Hat Enterprise Linux 8.0+
 * Red Hat Enterprise Linux 9.0
@@ -109,10 +117,13 @@ During the installation of the Operator, some `PersistentVolumeClaims` for diffe
 
 In this section, you examine the PVCs created by the Operator.
 
-. In the left menu, navigate to *Storage* and click *PersistentVolumeClaims*. From the project dropdown select `Show default projects` and filter or select `openshift-virtualization-os-images`
-+
-image::_images/Install/13_PVC_NS.png[]
+In the left menu, navigate to *Storage* and click *VolumeSnapshots*. From the project dropdown select `All Projects`
 
-. Review the PVCs automatically created, which are going to be used to create VMs from the catalog.
-+
-image::_images/Install/14_PVCs.png[]
+//image::_images/Install/13_PVC_NS.png[]
+image::_images/Install/13_VS_NS.png[]
+
+[IMPORTANT]
+Depending of the Storage used, the images can be `PersistentVolumeClaims` instead `VolumeSnapshots``. This lab is using _ODF_, which in latest versions of *OpenShift Virtualization* is using the Volume Snapshots feature. 
+[NOTE]
+Use volume snapshots on a storage profile that is proven to scale better when cloning from a single snapshot.
+

@@ -24,9 +24,7 @@ At a high level, this is done by configuring the host networking, such as creati
 
 To save time to perform all the tasks, NMState Operator was preinstalled for you.
 
-. Navigate to *Operators* -> *Installed Operators* and select *Kubernetes NMstate Operator*. You may need to select *All Projects* in the *Projects* drop-down to see the installed operator.
-
-. Switch to *NMState* tab and ensure it is in available status.
+Navigate to *Operators* -> *Installed Operators* and select *Kubernetes NMstate Operator*. You may need to select *All Projects* in the *Projects* drop-down to see the installed operator.
 
 == Create Linux Bridge on Worker Nodes
 
