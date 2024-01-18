@@ -451,19 +451,22 @@ image::_images/MTV/57_Finish_VMWARE_Plan.png[]
 image::_images/MTV/58_Ready_VMWARE_Plan.png[]
 
 . Press *Start* to begin the migration of the two VMs.
++
+[IMPORTANT]
+Don't wait till the migration finishes, move to the next part
 
-. After some minutes the migration is completed
+. After around 15 minutes the migration is completed.
 +
 image::_images/MTV/59_Completed_VMWARE_Plan.png[]
 +
-[NOTE]
-You can go back to OpenShift console and check the pods on *Workloads* -> *Pods* while the process is running.
+[IMPORTANT]
+Don't wait till the migration finishes, move to the next part
 
 === Review the migrated Virtual Machines
 
-. Return to the OpenShift Console to configure the VMs.
+To save time and don't wait to the VMWare migration, the VMs have been already migrated for you inside the `vmimported` project.
 
-. Navigate to *Virtualization* -> *VirtualMachines* and ensure the migrated VMs are there - you may need to select the *Project* `vmexamples` from the *Project* drop-down.
+. Navigate to *Virtualization* -> *VirtualMachines* and ensure the migrated VMs are there - you may need to select the *Project* `vimported` from the *Project* drop-down.
 +
 image::_images/MTV/60_VMWARE_VMs_List.png[]
 
