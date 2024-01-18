@@ -111,10 +111,10 @@ image::_images/MTV/93_MTV_Create_Provider.png[]
 
 . Select *Red Hat Virtualization* and fill with the following information
 +
-.. *Name*: `rhvcnv`
-.. *RHV Manager host name or IP address*: `https://rhvm-pub.cnv.infra.opentlc.com/ovirt-engine/api`
-.. *RHV Manager user name*: `migtoocpvirt@internal`
-.. *RHV Manager password*: `{rhv_password}`
+.. *Provider resource name*: `rhvcnv`
+.. *URL*: `https://rhvm-pub.cnv.infra.opentlc.com/ovirt-engine/api`
+.. *Username*: `migtoocpvirt@internal`
+.. *Password*: `{rhv_password}`
 .. Check `Skip certificate validation (if checked, the provider's certificate won't be validated)`
 
 . Click *Create provider*.
